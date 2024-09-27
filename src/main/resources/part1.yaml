@@ -1,0 +1,586 @@
+# Placeholder file, replace this content with your Open API 3 spec
+
+openapi: 3.0.3
+info:
+  title: part1
+  description: part1
+  version: 1.0.11
+servers:
+  - url: 'http://localhost:8080'
+components:
+  schemas:
+    Author:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        birthYear:
+          type: integer
+        nationality:
+          type: string
+        books:
+          type: array
+          items:
+            $ref: '#/components/schemas/Book'
+      required:
+        - id
+        - name
+    Book:
+      type: object
+      properties:
+        ISBN:
+          type: string
+        title:
+          type: string
+        publicationYear:
+          type: integer
+        price:
+          type: number
+        authors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Author'
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+      required:
+        - ISBN
+        - title
+        - authors
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+        datetime:
+          type: string
+        customerName:
+          type: string
+        books:
+          type: array
+          items:
+            $ref: '#/components/schemas/Book'
+      required:
+        - id
+        - datetime
+        - customerName
+
+
+#endpoint 1
+paths:
+  /authors:
+    get:
+      tags:
+        - author
+      summary: List all authors in the online bookstore system
+      description: List all authors using their IDs
+      operationId: getAllAuthors
+      responses:
+        '200':
+          description: Successful returned all authors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+        '204':
+          description: No authors currently exist
+        '400':
+          description: Bad request
+
+
+    #endpoint 2
+    post:
+      tags:
+        - author
+      summary: Add an author to the online bookstore system
+      description: Add a new author
+      operationId: addAuthor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Author'
+
+      responses:
+        '201':
+          description: Successfully created a new author
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+        '409':
+          description: Author already exists
+
+  #endpoint 3
+
+  /authors/{id}:
+    get:
+      tags:
+        - author
+      summary: Get an author from the online bookstore system
+      description: Get an author
+      operationId: getAuthor
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Id of Author to get
+      responses:
+        '200':
+          description: Successfully found author
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+        '404':
+          description: Author not found
+
+    #endpoint 4
+    put:
+      tags:
+        - author
+      summary: Update an author in the online bookstore system
+      description: Update an author
+      operationId: updateAuthor
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Id of Author to get
+      responses:
+        '200':
+          description: Successfully updated author
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+        '404':
+          description: Author not found
+
+    #endpoint 5
+    delete:
+      tags:
+        - author
+      summary: Delete an author in the online bookstore system
+      description: Delete an author
+      operationId: deleteAuthor
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Id of Author to get
+      responses:
+        '200':
+          description: Successfully deleted author
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+        '404':
+          description: Author not found
+
+
+  /authors/{id}/books:
+    get:
+      tags:
+        - author
+      summary: Get all books written by a single author
+      description: Get an authors' books
+      operationId: getAuthorsBooks
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Id of Author to get
+      responses:
+        '200':
+          description: Successfully found an authors' books
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+        '404':
+          description: Author not found
+
+
+  #book
+
+  #endpoint 7
+  /books:
+    get:
+      tags:
+        - books
+      summary: List all books in the online bookstore system
+      description: List all books using their ISBN
+      operationId: getAllBooks
+      responses:
+        '200':
+          description: Successful returned all books
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '204':
+          description: No content found
+        '400':
+          description: Bad request
+
+
+    #endpoint 8
+    post:
+      tags:
+        - book
+      summary: Add an book to the online bookstore system
+      description: Add a new book
+      operationId: addBook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+
+      responses:
+        '201':
+          description: Successfully created a new book
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '409':
+          description: Book already exists
+
+  #endpoint 9
+
+  /books/{ISBN}:
+    get:
+      tags:
+        - books
+      summary: Get a book from the online bookstore system
+      description: Get an book
+      operationId: getBook
+      parameters:
+        - in: path
+          name: ISBN
+          schema:
+            type: string
+          required: true
+          description: ISBN of Book to get
+      responses:
+        '200':
+          description: Successfully found book
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: Book not found
+
+    #endpoint 10
+    put:
+      tags:
+        - books
+      summary: Update a book in the online bookstore system
+      description: Update a book
+      operationId: updateBook
+      parameters:
+        - in: path
+          name: ISBN
+          schema:
+            type: string
+          required: true
+          description: ISBN of Book to get
+      responses:
+        '200':
+          description: Successfully updated book
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: Book not found
+
+    #endpoint 11
+    delete:
+      tags:
+        - books
+      summary: Delete a book in the online bookstore system
+      description: Delete a book
+      operationId: deleteBook
+      parameters:
+        - in: path
+          name: ISBN
+          schema:
+            type: string
+          required: true
+          description: ISBN of Book to get
+      responses:
+        '200':
+          description: Successfully deleted book
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: Book not found
+
+  #endpoint 12
+  /books/{ISBN}/authors:
+    get:
+      tags:
+        - books
+      summary: Get all authors of a book in the online bookstore system
+      description: Get all authors of a book
+      operationId: getBooksAuthors
+      parameters:
+        - in: path
+          name: ISBN
+          schema:
+            type: integer
+          required: true
+          description: ISBN of Book to get
+      responses:
+        '200':
+          description: Successfully found a books' authors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '204':
+          description: No content found
+        '404':
+          description: Authors of book not found
+
+  #endpoint 13
+  /books/{ISBN}/orders:
+    get:
+      tags:
+        - books
+      summary: Get all order containing a specific book in the online bookstore system
+      description: Get all orders with a specific book
+      operationId: getBooksOrders
+      parameters:
+        - in: path
+          name: ISBN
+          schema:
+            type: string
+          required: true
+          description: ISBN of Book to get
+      responses:
+        '200':
+          description: Successfully found all orders with this book
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: Orders with this book not found
+
+
+
+
+  #order
+
+
+  #endpoint 14
+  /orders:
+    get:
+      tags:
+        - orders
+      summary: List all orders in the online bookstore system
+      description: List all orders using their IDs
+      operationId: getAllOrders
+      responses:
+        '200':
+          description: Successful returned all orders
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '204':
+          description: No content found
+        '400':
+          description: Bad request
+
+
+
+    #endpoint 15
+    post:
+      tags:
+        - orders
+      summary: Add a new order to the online bookstore system
+      description: Add a new order
+      operationId: addOrder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+      responses:
+        '201':
+          description: Successfully created a new order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '409':
+          description: Order already exists
+
+
+
+  /orders/{id}:
+
+
+    # endpoint 16
+    get:
+      tags:
+        - order
+      summary: Get an order from the online bookstore system
+      description: Get an order
+      operationId: getOrder
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Id of Order to get
+      responses:
+        '200':
+          description: Successfully found order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404':
+          description: Order not found
+
+    #endpoint 17
+    put:
+      tags:
+        - order
+      summary: Create an order in the online bookstore system
+      description: Update an order
+      operationId: updateOrder
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Id of Order to get
+      responses:
+        '200':
+          description: Successfully updated order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404':
+          description: Order not found
+
+
+
+  #endpoint 18
+  /orders/{id}/books:
+    get:
+      tags:
+        - order
+      summary: Get all books in an order in the online bookstore system
+      description: Get all books in order
+      operationId: getOrdersBook
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Id of Order to get
+      responses:
+        '200':
+          description: Successfully found all books in this order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '204':
+          description: No content found
+        '404':
+          description: Books in order not found
+
+    #endpoint 19
+    post:
+      tags:
+        - order
+      summary: Update an order with a new book in the online bookstore system
+      description: Update an order
+      operationId: addBookToAnOrder
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Id of Order to get
+      responses:
+        '200':
+          description: Successfully added book to order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404':
+          description: Order not found
+
+
+
+
+  /orders/{id}/books/{ISBN}:
+
+    #endpoint 20
+    delete:
+      tags:
+        - books
+      summary: Delete a book from order in the online bookstore system
+      description: Delete a book from existing order
+      operationId: deleteBookFromAnOrder
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Id of Order to get
+
+        - in: path
+          name: ISBN
+          schema:
+            type: string
+          required: true
+          description: ISBN of Book to delete
+
+      responses:
+        '200':
+          description: Successfully deleted book from order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404':
+          description: Order not found
+
+
+
